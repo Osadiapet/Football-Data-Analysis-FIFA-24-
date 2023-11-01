@@ -11,6 +11,7 @@ import warnings
 warnings.filterwarnings('ignore')
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
+
 # Configure Streamlit
 st.set_page_config(page_title="FIFA'24 Player Analysis", page_icon="⚽", layout="wide")
 
