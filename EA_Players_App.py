@@ -436,4 +436,13 @@ if selected_categories:
 
 
 # End of the app
-st.sidebar.write("Developed by Simon-Peter Osadiapet")
+
+# Display your name in the sidebar
+st.sidebar.write("Developed by Simon-Peter Osadiapét")
+
+# Display your picture next to your name
+picture = "osadiapet.jpg"  
+st.sidebar.image(picture, use_column_width=True, caption="Simon-Peter Osadiapét")
+
+
+
