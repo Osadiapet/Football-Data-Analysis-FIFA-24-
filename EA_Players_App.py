@@ -319,8 +319,6 @@ else:
 st.header("Data Visualization")
 st.write("Explore the distribution of player attributes and their relationships.")
 
-
-
 # Select attributes to plot
 selected_variable = st.multiselect("Select a player attribute to show distribution", players_data.columns[2:])
 
@@ -359,6 +357,54 @@ if st.checkbox("Show Correlation Heatmap"):
     sns.heatmap(corr_columns.corr(), cmap='coolwarm', annot=True, fmt='.2f')
     plt.title("Heatmap Showing Relationship Between Player Attributes")
     st.pyplot()
+
+
+# Create a Streamlit app
+st.subheader("Top 10 Players by Attribute")
+
+# Dropdown to select a player attribute
+attribute_options = [
+    'value_eur', 'wage_eur', 'age', 'height_cm', 'weight_kg',
+    'international_reputation', 'release_clause_eur', 'pace', 'shooting',
+    'passing', 'dribbling', 'defending', 'physic', 'attacking_crossing',
+    'attacking_finishing', 'attacking_heading_accuracy',
+    'attacking_short_passing', 'attacking_volleys', 'skill_dribbling',
+    'skill_curve', 'skill_fk_accuracy', 'skill_long_passing',
+    'skill_ball_control', 'movement_acceleration', 'movement_sprint_speed',
+    'movement_agility', 'movement_reactions', 'movement_balance',
+    'power_shot_power', 'power_jumping', 'power_stamina', 'power_strength',
+    'power_long_shots', 'mentality_aggression', 'mentality_interceptions',
+    'mentality_positioning', 'mentality_vision', 'mentality_penalties',
+    'mentality_composure', 'defending_marking_awareness',
+    'defending_standing_tackle', 'defending_sliding_tackle',
+    'goalkeeping_diving', 'goalkeeping_handling', 'goalkeeping_kicking',
+    'goalkeeping_positioning', 'goalkeeping_reflexes', 'goalkeeping_speed'
+]
+
+selected_attribute = st.selectbox("Select a player attribute", [''] + attribute_options)
+
+if selected_attribute:
+    # Calculate the average of the selected attribute for each player
+    player_data = players_data.groupby('long_name')[selected_attribute].mean().reset_index()
+
+    # Sort the player data by the average of the selected attribute in descending order
+    player_data = player_data.sort_values(by=selected_attribute, ascending=False).head(10)
+
+    # Display the top 10 players with the highest average score in the selected attribute
+    st.subheader(f"Top 10 Players with Highest {selected_attribute}")
+    st.table(player_data)
+
+    # Create a bar chart to visualize the top 10 players
+    fig, ax = plt.subplots(figsize=(10, 6))
+    player_data.plot(x='long_name', y=selected_attribute, kind='bar', ax=ax)
+    plt.xlabel("Player Name")
+    plt.ylabel(selected_attribute)
+    plt.title(f"Top 10 Players with Highest {selected_attribute}")
+    st.pyplot(fig)
+else:
+    st.warning("Please select a player attribute to view the top players.")
+
+
 
 # Top Players by Average Overall Rating section
 # Using HTML to style the header text
