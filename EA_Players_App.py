@@ -360,12 +360,12 @@ if st.checkbox("Show Correlation Heatmap"):
 
 
 # Create a Streamlit app
-st.subheader("Top 10 Players by Attribute")
+st.subheader("Top 50 Players by Attribute")
 
 # Dropdown to select a player attribute
 attribute_options = [
     'value_eur', 'wage_eur', 'age', 'height_cm', 'weight_kg',
-    'international_reputation', 'release_clause_eur', 'pace', 'shooting',
+     'release_clause_eur', 'pace', 'shooting',
     'passing', 'dribbling', 'defending', 'physic', 'attacking_crossing',
     'attacking_finishing', 'attacking_heading_accuracy',
     'attacking_short_passing', 'attacking_volleys', 'skill_dribbling',
@@ -392,10 +392,10 @@ if selected_attribute:
     }).reset_index()
 
     # Sort the player data by the average of the selected attribute in descending order
-    player_data = player_data.sort_values(by=selected_attribute, ascending=False).head(10)
+    player_data = player_data.sort_values(by=selected_attribute, ascending=False).head(50)
 
     # Display the top 10 players with the highest average score in the selected attribute
-    st.subheader(f"Top 10 Players with Highest {selected_attribute}")
+    st.subheader(f"Top 50 Players with Highest {selected_attribute}")
     st.table(player_data)
 
     # Create a bar chart to visualize the top 10 players
