@@ -385,7 +385,11 @@ selected_attribute = st.selectbox("Select a player attribute", [''] + attribute_
 
 if selected_attribute:
     # Calculate the average of the selected attribute for each player
-    player_data = players_data.groupby('long_name')[selected_attribute].mean().reset_index()
+    player_data = players_data.groupby(['long_name']).agg({
+        'club_name': 'last',
+        'nationality_name': 'last',
+        selected_attribute: 'mean'
+    }).reset_index()
 
     # Sort the player data by the average of the selected attribute in descending order
     player_data = player_data.sort_values(by=selected_attribute, ascending=False).head(10)
