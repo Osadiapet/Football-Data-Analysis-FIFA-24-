@@ -40,7 +40,7 @@ selected_columns = [
 players_data = players_data[selected_columns]
 
 # Main page title and description
-st.title("FIFA'24 Player Analysis (2014-2024)")
+st.title("EA Sports Player Analysis (2014-2023)")
 st.write(
     "Welcome to the Football Data Analysis app. Explore various aspects of football player data, including attributes, player rankings, and more."
 )
@@ -222,23 +222,6 @@ if selected_teams:
 # Create a multiselect dropdown to select a player
 selected_players = st.sidebar.multiselect('Select Player', players_data['long_name'].unique())
 
-if selected_players:
-    # Retrieve the information for the selected player
-    selected_player_info = players_data[players_data['long_name'] == selected_players[0]]  
-
-    # Display the selected player's information in a tabular form
-    st.subheader("Information of Selected Player")
-    st.dataframe(selected_player_info.T)
-
-    # Calculate and display descriptive statistics for numerical variables
-    player_numerical_stats = selected_player_info.describe()
-    st.subheader("Descriptive Statistics for Selected Player")
-    st.dataframe(player_numerical_stats.T)
-
-else:
-    st.warning("Please select a player from the dropdown to view their information and statistics.")
-
-
 # Create a multiselect dropdown to select a player
 # selected_players = st.multiselect('Select a Player', players_data['long_name'].unique())
 
@@ -258,12 +241,12 @@ if selected_players:
     player_average_ratings_by_year = player_data.groupby('year')['overall'].mean()
 
     # Create a line plot to show the trend
-    st.write(f'Trend of Average Overall Rating for {selected_player} Over the Years:')
+    st.write(f'Trend of Overall Rating for {selected_player} Over the Years:')
     fig, ax = plt.subplots(figsize=(12, 6))
     ax.plot(player_average_ratings_by_year.index, player_average_ratings_by_year.values, marker='o', linestyle='-')
     ax.set_xlabel('Year')
-    ax.set_ylabel('Average Overall Rating')
-    ax.set_title(f'Trend of Average Overall Rating for {selected_player}')
+    ax.set_ylabel(' Overall Rating')
+    ax.set_title(f'Trend of Overall Rating for {selected_player}')
     ax.grid(True)
 
     # Set the y-axis limit to start from 0 and end at 100
@@ -274,26 +257,6 @@ if selected_players:
         ax.text(year, rating, f'{rating:.2f}', ha='center', va='bottom')
 
     st.pyplot(fig)
-
-
-# Create a multiselect widget to choose one or more team
-selected_teams = st.sidebar.multiselect("Select Team", players_data['club_name'])
-
-if selected_teams:
-    # Retrieve the information for the selected teams
-    selected_team_info = players_data[players_data['club_name'].isin(selected_teams)]
-
-    # Display the selected teams' information in a tabular form
-    st.subheader("Information of Selected Teams")
-    st.dataframe(selected_team_info)
-
-    # Calculate and display descriptive statistics for numerical variables
-    team_numerical_stats = selected_team_info.describe()
-    st.subheader("Descriptive Statistics for Selected Teams")
-    st.dataframe(team_numerical_stats.T)
-
-else:
-    st.warning("Please select a team from the dropdown to view their information and statistics.")
 
 
 # Create a multiselect widget to choose one or more countries
@@ -316,7 +279,6 @@ else:
 
 
 # Data Visualization section
-st.header("Data Visualization")
 st.write("Explore the distribution of player attributes and their relationships.")
 
 # Select attributes to plot
@@ -360,7 +322,7 @@ if st.checkbox("Show Correlation Heatmap"):
 
 
 # Create a Streamlit app
-st.subheader("Top 50 Players by Attribute")
+st.subheader("Top 10 Players by Attribute")
 
 # Dropdown to select a player attribute
 attribute_options = [
@@ -392,7 +354,7 @@ if selected_attribute:
     }).reset_index()
 
     # Sort the player data by the average of the selected attribute in descending order
-    player_data = player_data.sort_values(by=selected_attribute, ascending=False).head(50)
+    player_data = player_data.sort_values(by=selected_attribute, ascending=False).head(10)
 
     # Display the top 10 players with the highest average score in the selected attribute
     st.subheader(f"Top 50 Players with Highest {selected_attribute}")
@@ -413,7 +375,7 @@ else:
 # Top Players by Average Overall Rating section
 # Using HTML to style the header text
 # st.write("<h2>Top 10 Teams by Average Overall Rating of Players</h2>", unsafe_allow_html=True)
-st.subheader("Top Players by Average Overall Rating Over Time")
+st.write("Top Players by Average Overall Rating Over Time")
 st.write("Visualize the top players by their average overall rating")
 
 # Group by player_name and calculate the average overall rating
@@ -435,28 +397,6 @@ if st.checkbox("Show Top 10 Players"):
 
     st.pyplot()
 
-
-# Top tems by Average Overall Rating section
-st.subheader("Top 10 Teams by Average Overall Rating of Players")
-st.write("Visualize the top 10 Teams by their Players Average Overall Rating")
-
-# Group by player_name and calculate the average overall rating
-top_10_teams = players_data.groupby('club_name')[['overall']].mean().sort_values(by='overall', ascending=False).head(10)
-
-# Plot the top players
-if st.checkbox("Show Top 10 Teams"):
-    plt.figure(figsize=(12, 6))
-    bars = plt.barh(top_10_teams.index, top_10_teams['overall'], color='skyblue')
-    plt.xlabel('Average Overall Rating')
-    plt.title('Top 10 Teams by Average Overall Rating of their Players')
-    plt.gca().invert_yaxis()  # Invert the y-axis for better visualization
-
-    # Add data labels to the bars
-    for bar in bars:
-        width = bar.get_width()
-        plt.text(width, bar.get_y() + bar.get_height() / 2, f'{width:.2f}', ha='left', va='center', color='black')
-
-    st.pyplot()
 
 # Create a multiselect dropdown to select one or more categories
 selected_categories = st.multiselect('Select Position to View Top 10 Players', players_data['position_category'].unique())
@@ -484,6 +424,43 @@ if selected_categories:
                     ha='center', va='bottom', fontsize=8, color='black')
 
     st.pyplot(fig)
+
+
+# Create a dropdown to select the variable
+selected_variable = st.selectbox("Select a Variable:", [
+    'value_eur', 'wage_eur', 'age', 'height_cm', 'weight_kg',
+     'release_clause_eur', 'pace', 'shooting',
+    'passing', 'dribbling', 'defending', 'physic', 'attacking_crossing',
+    'attacking_finishing', 'attacking_heading_accuracy',
+    'attacking_short_passing', 'attacking_volleys', 'skill_dribbling',
+    'skill_curve', 'skill_fk_accuracy', 'skill_long_passing',
+    'skill_ball_control', 'movement_acceleration', 'movement_sprint_speed',
+    'movement_agility', 'movement_reactions', 'movement_balance',
+    'power_shot_power', 'power_jumping', 'power_stamina', 'power_strength',
+    'power_long_shots', 'mentality_aggression', 'mentality_interceptions',
+    'mentality_positioning', 'mentality_vision', 'mentality_penalties',
+    'mentality_composure', 'defending_marking_awareness',
+    'defending_standing_tackle', 'defending_sliding_tackle',
+    'goalkeeping_diving', 'goalkeeping_handling', 'goalkeeping_kicking',
+    'goalkeeping_positioning', 'goalkeeping_reflexes', 'goalkeeping_speed'
+])
+
+if selected_variable:
+    # Filter data based on the selected player
+    st.write(f"Overall Rating vs. {selected_variable}")
+
+    # Group by the selected variable and calculate the mean of 'Overall' rating
+    variable_rating_mean = players_data.groupby(selected_variable)['overall'].mean().reset_index()
+
+    # Plot the data
+    plt.figure(figsize=(10, 6))
+    plt.plot(variable_rating_mean[selected_variable], variable_rating_mean['overall'], color='grey')
+    plt.title(f"{selected_variable} vs. Overall Rating", fontsize=16, fontweight='bold')
+    plt.xlabel(selected_variable, fontsize=12)
+    plt.ylabel("Overall Rating", fontsize=12)
+    plt.grid(color='grey', linestyle='--', linewidth=0.5)
+
+    st.pyplot(plt)
 
 
 # End of the app
